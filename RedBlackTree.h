@@ -13,37 +13,35 @@ struct node{
 ///Function of node transplantation which is necessary
 ///to delete node and repair tree structure after deletion
 void Transplant(struct node **root,struct node *u, struct node *v){
-	if(u->parent==NULL){
-		(*root)=v;
+	if(u->parent == NULL){
+		(*root) = v;
 	}
-	else if(u==u->parent->left){
-		u->parent->left=v;
+	else if(u == u->parent->left){
+		u->parent->left = v;
 	}
 	else{
-		u->parent->right=v;
+		u->parent->right = v;
 	}
 
-	v->parent=u->parent;
+	v->parent = u->parent;
 }
 
 
 
 struct node *FindMin(struct node *x){
-    while(x->left!=NULL){
-        x=x->left;
+    while(x->left != NULL){
+        x = x->left;
     }
     return x;
 }
 
 struct node *FindMax(struct node *x){
-    while(x->right!=NULL){
-        x=x->right;
+    while(x->right != NULL){
+        x = x->right;
     }
     return x;
 }
 
-///Lijeva rotacija - funkcija koja nam je potrebna za obavljanje
-///popravka Crveno-crnih svojstava nakon funkcije insert
 
 ///Left rotation - function that is necessary for reparation of
 ///Red-black tree properties after inserting/deleting certain node
@@ -52,30 +50,30 @@ void LRotation(struct node **root,struct node *a)
     if (!a || !a->right){
         return ;
     }
-    struct node *b=a->right;
+    struct node *b = a->right;
 
 
-    a->right=b->left;
+    a->right = b->left;
 
 
-    if (a->right!=NULL){
-        a->right->parent=a;
+    if (a->right != NULL){
+        a->right->parent = a;
     }
 
-    b->parent=a->parent;
+    b->parent = a->parent;
 
-    if (a->parent==NULL){
-        (*root)=b;
+    if (a->parent == NULL){
+        (*root) = b;
     }
-    else if (a==a->parent->left){
-        a->parent->left=b;
+    else if (a == a->parent->left){
+        a->parent->left = b;
     }
     else{
-        a->parent->right=b;
+        a->parent->right = b;
     }
-    b->left=a;
+    b->left = a;
 
-    a->parent=b;
+    a->parent = b;
 }
 
 
@@ -85,23 +83,23 @@ void RRotation(struct node **root,struct node *a)
     if (!a || !a->left){
         return ;
     }
-    struct node *b=a->left;
-    a->left=b->right;
-    if (b->right!=NULL){
-        b->right->parent=a;
+    struct node *b = a->left;
+    a->left = b->right;
+    if (b->right != NULL){
+        b->right->parent = a;
     }
-    b->parent=a->parent;
-    if (b->parent==NULL){
-        (*root)=b;
+    b->parent = a->parent;
+    if (b->parent == NULL){
+        (*root) = b;
     }
-    else if (a==a->parent->left){
-        a->parent->left=b;
+    else if (a == a->parent->left){
+        a->parent->left = b;
     }
     else{
-        a->parent->right=b;
+        a->parent->right = b;
     }
-    b->right=a;
-    a->parent=b;
+    b->right = a;
+    a->parent = b;
 }
 
 
@@ -113,34 +111,34 @@ void Repair(struct node **root,struct node *z)
     {
         struct node *uncle;
         if (z->parent && z->parent->parent && z->parent==z->parent->parent->left){
-            uncle=z->parent->parent->right;
+            uncle = z->parent->parent->right;
         }
         else{
-            uncle=z->parent->parent->left;
+            uncle = z->parent->parent->left;
         }
         if (!uncle){
-            z=z->parent->parent;
+            z = z->parent->parent;
         }
-        else if (uncle->color=='R'){
-            uncle->color='B';
-            z->parent->color='B';
-            z->parent->parent->color='R';
+        else if (uncle->color == 'R'){
+            uncle->color = 'B';
+            z->parent->color = 'B';
+            z->parent->parent->color = 'R';
             z = z->parent->parent;
         }
 
 
         else
         {
-            if (z->parent==z->parent->parent->left && z==z->parent->left){
-                char c=z->parent->color ;
-                z->parent->color=z->parent->parent->color;
-                z->parent->parent->color=c;
+            if (z->parent == z->parent->parent->left && z == z->parent->left){
+                char c =z->parent->color ;
+                z->parent->color = z->parent->parent->color;
+                z->parent->parent->color = c;
                 RRotation(root,z->parent->parent);
             }
             if (z->parent && z->parent->parent && z->parent==z->parent->parent->left && z==z->parent->right){
-                char c=z->color ;
-                z->color=z->parent->parent->color;
-                z->parent->parent->color=c;
+                char c = z->color;
+                z->color = z->parent->parent->color;
+                z->parent->parent->color = c;
                 LRotation(root,z->parent);
                 RRotation(root,z->parent->parent);
             }
@@ -153,49 +151,49 @@ void Repair(struct node **root,struct node *z)
             }
 
             if (z->parent && z->parent->parent && z->parent==z->parent->parent->right && z==z->parent->left){
-                char c=z->color ;
-                z->color=z->parent->parent->color;
+                char c = z->color ;
+                z->color = z->parent->parent->color;
                 z->parent->parent->color=c;
                 RRotation(root,z->parent);
                 LRotation(root,z->parent->parent);
             }
         }
     }
-    (*root)->color='B';
+    (*root)->color = 'B';
 }
 void InsertNode(struct node **root, int data)
 {
 
     struct node *z = (struct node*)malloc(sizeof(struct node));
-    z->data=data;
-    z->left=z->right=z->parent=NULL;
+    z->data = data;
+    z->left=z->right = z->parent = NULL;
 
 
-    if ((*root)==NULL){
-        z->color='B';
-        (*root)=z;
+    if ((*root) == NULL){
+        z->color = 'B';
+        (*root) = z;
     }
     else{
-        struct node *y=NULL;
-        struct node *x=(*root);
+        struct node *y = NULL;
+        struct node *x = (*root);
 
-        while (x!=NULL){
-            y=x;
+        while (x != NULL){
+            y = x;
             if (z->data < x->data){
-                x=x->left;
+                x = x->left;
             }
             else{
-                x=x->right;
+                x = x->right;
             }
         }
         z->parent=y;
         if (z->data > y->data){
-            y->right=z;
+            y->right = z;
         }
         else{
-            y->left=z;
+            y->left = z;
         }
-        z->color='R';
+        z->color = 'R';
 
         Repair(root,z);
     }
@@ -203,10 +201,10 @@ void InsertNode(struct node **root, int data)
 
 
 struct node* FindNode(struct node *root, int x){
-    if(root==NULL || root->data==x){
+    if(root == NULL || root->data == x){
         return root;
     }
-    else if(x>root->data){
+    else if(x > root->data){
         return FindNode(root->right,x);
     }
     else{
@@ -217,8 +215,8 @@ struct node* FindNode(struct node *root, int x){
 
 ///Inorder traversal function
 void inorder(struct node *root){
-    static int l=0;
-    if (root==NULL)
+    static int l = 0;
+    if (root == NULL)
         return;
     inorder(root->left);
     printf("%d ", root->data);
@@ -233,60 +231,60 @@ void inorder(struct node *root){
 
 void DeleteRepair(struct node **root, struct node *x){
     struct node *w;
-    while(x!=(*root) && x->color=='B'){
-        if(x==x->parent->left){
+    while(x != (*root) && x->color == 'B'){
+        if(x == x->parent->left){
 
-            w=x->parent->right;
+            w = x->parent->right;
 
-            if(w->color=='R'){
+            if(w->color == 'R'){
 
-                w->color='B';
-                x->parent->color='R';
+                w->color = 'B';
+                x->parent->color = 'R';
                 LRotation(root,x->parent);
-                w=x->parent->right;
+                w = x->parent->right;
 
             }
-            if(w->left->color=='B' && w->right->color=='B'){
+            if(w->left->color == 'B' && w->right->color == 'B'){
 
-                w->color='R';
-				x->parent->color='B';
+                w->color = 'R';
+				x->parent->color = 'B';
 				x = x->parent;
 
             }
             else{
 
-                if(w->right->color=='B'){
-					w->color='R';
-					w->left->color='B';
+                if(w->right->color =='B'){
+					w->color = 'R';
+					w->left->color = 'B';
                     RRotation(root,w);
 					w = x->parent->right;
 
 				}
 
-				w->color=x->parent->color;
-				x->parent->color='B';
-				x->right->color='B';
+				w->color = x->parent->color;
+				x->parent->color = 'B';
+				x->right->color = 'B';
 				LRotation(root,x->parent);
-				x=(*root);
+				x = (*root);
             }
 
         }
         else{
-            w=x->parent->left;
-            if(w->color=='R'){
-                w->color='B';
-                x->parent->color='B';
+            w = x->parent->left;
+            if(w->color == 'R'){
+                w->color = 'B';
+                x->parent->color = 'B';
                 RRotation(root,x->parent);
-                w=x->parent->left;
+                w = x->parent->left;
             }
-            if(w->left->color=='B' && w->right->color=='b'){
+            if(w->left->color == 'B' && w->right->color == 'B'){
                 w->color = 'R';
 				x->parent->color = 'B';
 				x = x->parent;
             }
             else{
-                if(w->left->color=='B'){
-                    w->color='R';
+                if(w->left->color == 'B'){
+                    w->color = 'R';
                     w->right->color = 'B';
 					LRotation(root,w);
 					w = x->parent->left;
@@ -301,7 +299,7 @@ void DeleteRepair(struct node **root, struct node *x){
 
         }
     }
-    x->color='B';
+    x->color = 'B';
 }
 
 
@@ -310,34 +308,34 @@ void DeleteRepair(struct node **root, struct node *x){
 
 
 void DeleteNode(struct node **root, int data){
-    struct node *nodeToBeDeleted=FindNode(*root,data);
+    struct node *nodeToBeDeleted = FindNode(*root,data);
     struct node *x,*y;
-    if(nodeToBeDeleted==NULL){
+    if(nodeToBeDeleted == NULL){
         return;
     }
-    char orgColor=nodeToBeDeleted->color;
-    if(nodeToBeDeleted->left==NULL){
-        x=nodeToBeDeleted->right;
+    char orgColor = nodeToBeDeleted->color;
+    if(nodeToBeDeleted->left == NULL){
+        x = nodeToBeDeleted->right;
         Transplant(root,nodeToBeDeleted,x);
     }
-    else if(nodeToBeDeleted->right==NULL){
-        x=nodeToBeDeleted->left;
+    else if(nodeToBeDeleted->right == NULL){
+        x = nodeToBeDeleted->left;
         Transplant(root,nodeToBeDeleted,x);
     }
     else{
-        y=FindMin(nodeToBeDeleted->right);
-        orgColor=y->color;
-        x=y->right;
-        if(y==nodeToBeDeleted->right || y==nodeToBeDeleted->left){
-            x->parent=y;
+        y = FindMin(nodeToBeDeleted->right);
+        orgColor = y->color;
+        x = y->right;
+        if(y == nodeToBeDeleted->right || y == nodeToBeDeleted->left){
+            x->parent = y;
         }
         else{
             Transplant(root,y,y->right);
         }
         Transplant(root,nodeToBeDeleted,y);
-        y->color=orgColor;
+        y->color = orgColor;
     }
-    if(orgColor=='B'){
+    if(orgColor == 'B'){
         DeleteRepair(root,x);
     }
 
